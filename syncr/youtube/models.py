@@ -11,7 +11,7 @@ class Video(models.Model):
     title       = models.CharField(max_length=250)
     author      = models.ForeignKey('YoutubeUser')
     description = models.TextField(blank=True)
-    tag_list    = models.CharField(max_length=250)
+    tag_list    = models.TextField(blank=True)
     view_count  = models.PositiveIntegerField()
     url         = models.URLField()
     thumbnail_url = models.URLField(blank=True)
@@ -23,9 +23,10 @@ class Video(models.Model):
         Tag.objects.update_tags(self, tag_list)
     tags = property(_get_tags, _set_tags)
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self, force_insert=False, force_update=False, using=False):
         super(Video, self).save(force_insert=force_insert,
-				force_update=force_update)
+                force_update=force_update,
+                using=using)
         Tag.objects.update_tags(self, self.tag_list)
 
     def embed_url(self):
@@ -57,7 +58,7 @@ class PlaylistVideo(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.title
-    
+
 class YoutubeUser(models.Model):
     GENDER_CHOICES = (
         ('m', 'Male'),
@@ -78,7 +79,7 @@ class YoutubeUser(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.username
-    
+        
     def sync(self):
         from syncr.app.youtube import YoutubeSyncr
         yts = YoutubeSyncr()
@@ -86,4 +87,3 @@ class YoutubeUser(models.Model):
         yts.syncUserUploads(self.username)
         yts.syncUserFavorites(self.username)
         yts.syncUserPlaylists(self.username)
-        
