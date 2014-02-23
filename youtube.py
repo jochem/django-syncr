@@ -1,6 +1,6 @@
 import urllib
 import datetime, time
-from syncr.youtube.models import YoutubeUser, Video, Playlist, PlaylistVideo
+from syncr.models import YoutubeUser, Video, Playlist, PlaylistVideo
 
 try:
     import xml.etree.ElementTree as ET
